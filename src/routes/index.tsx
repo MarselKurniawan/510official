@@ -161,12 +161,6 @@ const SOCIALS: { name: string; url: string }[] = [
   { name: "Bandcamp", url: "#" },
 ];
 
-const VIDEOS = [
-  { id: "dQw4w9WgXcQ", title: { EN: "Ripple (Official Video)", ID: "Ripple (Video Resmi)" } },
-  { id: "ScMzIvxBSi4", title: { EN: "Void — Live at Studio", ID: "Void — Live di Studio" } },
-  { id: "5qap5aO4i9A", title: { EN: "Ember Sessions", ID: "Sesi Ember" } },
-];
-
 // ---- Copy dictionary ----
 const COPY = {
   tickets: { EN: "Tickets", ID: "Tiket" },
@@ -361,12 +355,9 @@ function Music({ onPlay }: { onPlay: (id: string) => void }) {
   const { data: backgrounds } = useMusicBackgrounds();
   const { data: dbSocials } = useSocialLinks();
 
-  const videos =
-    tracks && tracks.length > 0
-      ? tracks
-          .map((t) => ({ id: extractYoutubeId(t.youtube_url), title: t.title }))
-          .filter((v): v is { id: string; title: string } => !!v.id)
-      : VIDEOS.map((v) => ({ id: v.id, title: v.title[lang] }));
+  const videos = (tracks ?? [])
+    .map((t) => ({ id: extractYoutubeId(t.youtube_url), title: t.title }))
+    .filter((v): v is { id: string; title: string } => !!v.id);
 
   const bgImages = backgrounds?.map((b) => b.image_url).filter(Boolean) ?? [];
 
