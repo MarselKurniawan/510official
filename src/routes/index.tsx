@@ -14,7 +14,7 @@ import { MusicBackdrop } from "@/components/MusicBackdrop";
 import { SectionFX } from "@/components/SectionFX";
 import { Reveal } from "@/components/Reveal";
 import { LanguageProvider, useLang, type Lang } from "@/lib/i18n";
-import { MERCH, type MerchItem } from "@/data/merch";
+import { type MerchItem } from "@/data/merch";
 import { MerchCard } from "@/components/MerchCard";
 import { resolveMediaUrl } from "@/lib/admin-upload";
 import { ResolvedImg } from "@/components/ResolvedImg";
@@ -61,24 +61,6 @@ const NAV: { key: string; label: Record<Lang, string>; href: string }[] = [
   { key: "press", label: { EN: "Press", ID: "Pers" }, href: "#press" },
   { key: "contact", label: { EN: "Contact", ID: "Kontak" }, href: "#contact" },
 ];
-
-type TourStatus = "available" | "low" | "sold_out";
-const TOUR: {
-  date: string;
-  city: string;
-  venue: string;
-  event: string;
-  url: string;
-  status: TourStatus;
-}[] = [
-  { date: "12 SEP 2026", city: "Jakarta", venue: "M Bloc Live House", event: "Ripple Tour Night 1", url: "https://loket.com", status: "available" },
-  { date: "27 SEP 2026", city: "Surabaya", venue: "Bogey's Terrace", event: "Ripple Tour East Java", url: "https://loket.com", status: "low" },
-  { date: "18 OCT 2026", city: "Yogyakarta", venue: "Jogja National Museum", event: "Ripple x Jogja Noise", url: "https://loket.com", status: "available" },
-  { date: "08 NOV 2026", city: "Bali", venue: "Uma Seminyak", event: "Ripple Sunset Session", url: "https://loket.com", status: "available" },
-  { date: "22 NOV 2026", city: "Kuala Lumpur", venue: "The Bee, Publika", event: "Ripple SEA Tour", url: "https://loket.com", status: "sold_out" },
-  { date: "13 DEC 2026", city: "Singapore", venue: "Esplanade Annexe", event: "Ripple SEA Finale", url: "https://loket.com", status: "low" },
-];
-
 
 const PRESS: {
   source: string;
@@ -200,6 +182,9 @@ const COPY = {
   rights: { EN: "All rights reserved.", ID: "Hak cipta dilindungi." },
   siteBy: { EN: "Site by 510 Studio", ID: "Situs oleh 510 Studio" },
   almostGone: { EN: "Almost gone", ID: "Segera habis" },
+  tourSoon: { EN: "New dates dropping soon — stay tuned.", ID: "Tanggal tur baru segera diumumkan — nantikan." },
+  merchSoon: { EN: "Fresh merch on the way — stay tuned.", ID: "Merch baru segera hadir — nantikan." },
+  gallerySoon: { EN: "Photos coming soon — stay tuned.", ID: "Foto segera hadir — nantikan." },
   read: { EN: "Read article ↗", ID: "Baca artikel ↗" },
   outOfStock: { EN: "Out of stock", ID: "Habis" },
   preOrder: { EN: "Pre-order", ID: "Pre-order" },
@@ -476,8 +461,7 @@ function Tour() {
 
 
 
-  const items = merged.length > 0 ? merged : TOUR.map((t, i) => ({ ...t, key: `s-${i}`, fromBit: false }));
-
+  const items = merged;
 
 
   return (
@@ -489,6 +473,13 @@ function Tour() {
           <p className="mb-16 text-xs uppercase tracking-[0.3em] text-white/60">02 — {COPY.section.tour[lang]}</p>
         </Reveal>
 
+        {items.length === 0 ? (
+          <Reveal>
+            <p className="border-y border-white/10 py-16 text-center text-display text-2xl text-white/50 md:text-4xl">
+              {COPY.tourSoon[lang]}
+            </p>
+          </Reveal>
+        ) : (
         <div className="divide-y divide-white/10 border-y border-white/10">
           {items.map((t, i) => {
             const disabled = t.status === "sold_out";
@@ -549,6 +540,7 @@ function Tour() {
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );
@@ -623,21 +615,29 @@ function Merch() {
                 {COPY.merchHeading[lang]}
               </h2>
             </div>
-            <Link
-              to="/shop-all"
-              className="inline-flex items-center gap-2 rounded-full border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-sm text-neutral-50 transition hover:bg-transparent hover:text-neutral-900"
-            >
-              {COPY.shopAll[lang]}
-            </Link>
+            {dbHasImages && (
+              <Link
+                to="/shop-all"
+                className="inline-flex items-center gap-2 rounded-full border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-sm text-neutral-50 transition hover:bg-transparent hover:text-neutral-900"
+              >
+                {COPY.shopAll[lang]}
+              </Link>
+            )}
 
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-          {dbHasImages
-            ? dbMerch!.map((r: any, i: number) => <MerchDBItem key={r.id} row={r} i={i} />)
-            : MERCH.map((m, i) => <MerchCard key={m.name.EN} item={m} i={i} />)}
-        </div>
+        {dbHasImages ? (
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+            {dbMerch!.map((r: any, i: number) => <MerchDBItem key={r.id} row={r} i={i} />)}
+          </div>
+        ) : (
+          <Reveal>
+            <p className="border-y border-neutral-300 py-16 text-center text-display text-2xl text-neutral-400 md:text-4xl">
+              {COPY.merchSoon[lang]}
+            </p>
+          </Reveal>
+        )}
       </div>
     </section>
   );
@@ -649,25 +649,11 @@ function Gallery() {
   const { data: dbShots } = useGalleryShots();
   const [openAt, setOpenAt] = useState<number | null>(null);
 
-  const fallback = [
-    { src: "https://images.unsplash.com/photo-1508252592163-5d3c3c559f36?w=2000", cap: "Jakarta / 2024" },
-    { src: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=2000", cap: "Bandung / 2024" },
-    { src: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=2000", cap: "Surabaya / 2023" },
-    { src: "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=2000", cap: "Yogyakarta / 2023" },
-    { src: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=2000", cap: "Bali / 2024" },
-    { src: "https://images.unsplash.com/photo-1519683109079-d5f539e1542f?w=2000", cap: "Studio / 2024" },
-    { src: "https://images.unsplash.com/photo-1505247964246-1f0a90443c36?w=2000", cap: "Backstage" },
-    { src: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=2000", cap: "Soundcheck" },
-  ];
-
-  const shots =
-    dbShots && dbShots.length > 0
-      ? dbShots.map((s) => ({ src: s.image_url, cap: s.caption ?? "" }))
-      : fallback;
+  const shots = (dbShots ?? []).map((s) => ({ src: s.image_url, cap: s.caption ?? "" }));
 
   // Ensure at least 8 tiles for the asymmetric layout (repeat if needed)
   const at = (i: number) => i % shots.length;
-  const tile = (i: number) => shots[at(i)];
+  const tile = (i: number) => shots[at(i)]!;
 
   return (
     <section id="gallery" className="relative overflow-hidden py-32 md:py-48">
@@ -677,6 +663,14 @@ function Gallery() {
           <p className="mb-16 px-2 text-xs uppercase tracking-[0.3em] text-white/60">04 — {COPY.section.gallery[lang]}</p>
         </Reveal>
 
+        {shots.length === 0 ? (
+          <Reveal>
+            <p className="border-y border-white/10 py-16 text-center text-display text-2xl text-white/50 md:text-4xl">
+              {COPY.gallerySoon[lang]}
+            </p>
+          </Reveal>
+        ) : (
+        <>
         <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
           <Reveal>
             <GalleryTile shot={tile(0)} onOpen={() => setOpenAt(at(0))} className="md:col-span-2 aspect-[16/10]" />
@@ -706,6 +700,8 @@ function Gallery() {
         <Reveal>
           <GalleryTile shot={tile(7)} onOpen={() => setOpenAt(at(7))} className="aspect-[21/9]" />
         </Reveal>
+        </>
+        )}
       </div>
 
       <GalleryLightbox
