@@ -6,7 +6,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { SectionFX } from "@/components/SectionFX";
 import { formatEventDate } from "@/lib/content-hooks";
 import { ResolvedImg } from "@/components/ResolvedImg";
-import logoAsset from "@/assets/logo.png.asset.json";
+import { LOGO_URL } from "@/lib/media";
 
 export const Route = createFileRoute("/press/$id")({
   head: ({ loaderData }) => {
@@ -92,7 +92,7 @@ function PressArticle() {
         <header className="sticky top-0 z-40 border-b border-white/10 bg-background/80 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between px-5 md:px-10">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoAsset.url} alt="510" className="h-6 w-6 invert" />
+              <img src={LOGO_URL} alt="510" className="h-6 w-6 invert" />
               <span className="text-display text-lg">510</span>
             </Link>
             <Link to="/" hash="press" className="text-[10px] uppercase tracking-[0.3em] text-white/70 hover:text-white">

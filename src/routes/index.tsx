@@ -2,13 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { Phone } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
-import logoAsset from "@/assets/logo.png.asset.json";
-import heroVideo from "@/assets/hero.mp4.asset.json";
-import esaOrange from "@/assets/esa-orange.webp.asset.json";
-import clownRed from "@/assets/clown-red.webp.asset.json";
-import kickWhite from "@/assets/kick-white.webp.asset.json";
-import bajawaLive from "@/assets/bajawa.webp.asset.json";
-import saemenLive from "@/assets/saemen-live.mp4.asset.json";
+import {
+  ESA_ORANGE_URL,
+  HERO_VIDEO_URL,
+  KICK_WHITE_URL,
+  LOGO_URL,
+  SAEMEN_LIVE_VIDEO_URL,
+} from "@/lib/media";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { CometCursor } from "@/components/CometCursor";
 import { MusicBackdrop } from "@/components/MusicBackdrop";
@@ -162,7 +162,7 @@ function Nav() {
     <header className="fixed top-0 left-0 right-0 z-40 mix-blend-difference">
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-4 py-4 md:px-10 md:py-5">
         <a href="#top" className="flex shrink-0 items-center gap-2">
-          <img src={logoAsset.url} alt="510" className="h-7 w-7 invert md:h-8 md:w-8" />
+          <img src={LOGO_URL} alt="510" className="h-7 w-7 invert md:h-8 md:w-8" />
         </a>
         <nav className="hidden gap-8 md:flex">
           {NAV.map((n) => (
@@ -197,7 +197,7 @@ function Hero() {
     <section id="top" ref={ref} className="relative h-[110vh] overflow-hidden bg-black">
       <motion.div style={{ scale, y }} className="absolute inset-0">
         <video
-          src={heroVideo.url}
+          src={HERO_VIDEO_URL}
           autoPlay
           muted
           loop
@@ -210,7 +210,7 @@ function Hero() {
 
       <motion.div style={{ opacity }} className="relative z-10 flex h-screen flex-col items-center justify-center px-6 text-center">
         <motion.img
-          src={logoAsset.url}
+          src={LOGO_URL}
           alt="510"
           initial={{ opacity: 0, y: 60, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -521,7 +521,7 @@ function Merch() {
       {/* Decorative offset photo */}
       <div className="pointer-events-none absolute -right-24 top-16 hidden w-[46%] md:block">
         <img
-          src={esaOrange.url}
+          src={ESA_ORANGE_URL}
           alt=""
           className="h-auto w-full mix-blend-multiply grayscale opacity-70"
           loading="lazy"
@@ -921,7 +921,7 @@ function Contact() {
         <Reveal delay={0.15}>
           <div className="relative aspect-[4/5] w-full overflow-hidden border border-white/15 md:aspect-auto md:h-full md:min-h-[600px]">
             <video
-              src={saemenLive.url}
+              src={SAEMEN_LIVE_VIDEO_URL}
               autoPlay
               loop
               muted
@@ -943,7 +943,7 @@ function Contact() {
                 07° 36' 35" E
               </div>
               <img
-                src={kickWhite.url}
+                src={KICK_WHITE_URL}
                 alt=""
                 className="hidden h-20 w-16 object-cover mix-blend-screen opacity-70 md:block"
                 loading="lazy"
@@ -1159,13 +1159,13 @@ function Footer() {
         <div className="relative flex h-[220px] w-[220px] items-center justify-center md:h-[320px] md:w-[320px]">
           <div className="footer-logo-3d relative h-full w-full">
             <img
-              src={logoAsset.url}
+              src={LOGO_URL}
               alt="510"
               className="absolute inset-0 h-full w-full object-contain invert"
               style={{ opacity: 0.9 }}
             />
             <img
-              src={logoAsset.url}
+              src={LOGO_URL}
               alt=""
               aria-hidden
               className="absolute inset-0 h-full w-full object-contain invert glitch-slice-a"

@@ -7,8 +7,7 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import { SectionFX } from "@/components/SectionFX";
 import { useMerchItems } from "@/lib/content-hooks";
 import { resolveMediaUrl } from "@/lib/admin-upload";
-import logoAsset from "@/assets/logo.png.asset.json";
-import esaOrange from "@/assets/esa-orange.webp.asset.json";
+import { ESA_ORANGE_URL, LOGO_URL } from "@/lib/media";
 
 export const Route = createFileRoute("/shop-all")({
   head: () => ({
@@ -82,7 +81,7 @@ function ShopAllPage() {
         <header className="sticky top-0 z-50 border-b border-neutral-950/10 bg-bone/85 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-[1800px] items-center justify-between px-5 md:px-10">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoAsset.url} alt="510" className="h-6 w-6" />
+              <img src={LOGO_URL} alt="510" className="h-6 w-6" />
               <span className="text-display text-lg tracking-tight">510</span>
             </Link>
             <Link to="/" className="text-[10px] uppercase tracking-[0.3em] text-neutral-600 hover:text-neutral-950">
@@ -98,7 +97,7 @@ function ShopAllPage() {
           {/* Offset photo */}
           <div className="pointer-events-none absolute -right-16 -top-8 hidden w-[42%] md:block">
             <img
-              src={esaOrange.url}
+              src={ESA_ORANGE_URL}
               alt=""
               className="h-auto w-full mix-blend-multiply grayscale opacity-80"
               loading="lazy"

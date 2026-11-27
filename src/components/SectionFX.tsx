@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import logoAsset from "@/assets/logo.png.asset.json";
+import { LOGO_URL } from "@/lib/media";
 
 /**
  * Per-section background FX:
@@ -59,7 +59,7 @@ export function SectionFX({
       {/* Spinning raster logo */}
       <div className="absolute inset-0 flex items-center justify-center">
         <img
-          src={logoAsset.url}
+          src={LOGO_URL}
           alt=""
           className={`floating-logo-spin h-[85vmin] w-[85vmin] max-h-[900px] max-w-[900px] object-contain ${invertLogo ? "invert" : ""}`}
           style={{ opacity: logoOpacity }}

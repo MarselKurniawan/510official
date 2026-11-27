@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import live1 from "@/assets/live1.webp.asset.json";
-import live2 from "@/assets/live2.webp.asset.json";
+import { MUSIC_BACKDROP_URLS } from "@/lib/media";
 
-const FALLBACK_IMAGES = [live1.url, live2.url];
+const FALLBACK_IMAGES = MUSIC_BACKDROP_URLS;
 
 /**
  * Alternating photo backdrop with animated noise/grain and subtle glitch.

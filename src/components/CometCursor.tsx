@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import logo from "@/assets/cursor-logo.png.asset.json";
+import { CURSOR_LOGO_URL } from "@/lib/media";
 
 // Logo follows the cursor, tilts toward the movement direction and glitches
 // (RGB split + jitter) on fast moves and at random intervals. Fine pointers only.
@@ -60,9 +60,9 @@ export function CometCursor() {
       aria-hidden
       className="pointer-events-none fixed left-0 top-0 z-[9999] h-11 w-11 opacity-0 transition-opacity duration-300"
     >
-      <img ref={redRef} src={logo.url} alt="" className={`${layer} mix-blend-screen opacity-0`} style={{ filter: "drop-shadow(0 0 0 red) sepia(1) saturate(8) hue-rotate(-40deg)" }} />
-      <img ref={cyanRef} src={logo.url} alt="" className={`${layer} mix-blend-screen opacity-0`} style={{ filter: "sepia(1) saturate(8) hue-rotate(150deg)" }} />
-      <img ref={mainRef} src={logo.url} alt="" className={`${layer} drop-shadow-[0_0_6px_rgba(255,140,40,0.5)]`} />
+      <img ref={redRef} src={CURSOR_LOGO_URL} alt="" className={`${layer} mix-blend-screen opacity-0`} style={{ filter: "drop-shadow(0 0 0 red) sepia(1) saturate(8) hue-rotate(-40deg)" }} />
+      <img ref={cyanRef} src={CURSOR_LOGO_URL} alt="" className={`${layer} mix-blend-screen opacity-0`} style={{ filter: "sepia(1) saturate(8) hue-rotate(150deg)" }} />
+      <img ref={mainRef} src={CURSOR_LOGO_URL} alt="" className={`${layer} drop-shadow-[0_0_6px_rgba(255,140,40,0.5)]`} />
     </div>
   );
 }
