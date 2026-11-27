@@ -62,86 +62,8 @@ const NAV: { key: string; label: Record<Lang, string>; href: string }[] = [
   { key: "contact", label: { EN: "Contact", ID: "Kontak" }, href: "#contact" },
 ];
 
-const PRESS: {
-  source: string;
-  title: Record<Lang, string>;
-  excerpt: Record<Lang, string>;
-  date: string;
-  url: string;
-  image: string;
-}[] = [
-  {
-    source: "ROLLING STONE ID",
-    title: {
-      EN: "510's Ripple is a hypnotic, molten wall of sound",
-      ID: "Ripple dari 510: dinding suara yang menghipnotis",
-    },
-    excerpt: {
-      EN: "The Bandung quartet returns with their most physical record yet — six tracks recorded live to tape.",
-      ID: "Kuartet asal Bandung kembali dengan album paling fisik mereka — enam lagu direkam langsung ke pita.",
-    },
-    date: "12 MAR 2025",
-    url: "#",
-    image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200",
-  },
-  {
-    source: "THE JAKARTA POST",
-    title: {
-      EN: "Rewriting the shape of local shoegaze",
-      ID: "Menulis ulang bentuk shoegaze lokal",
-    },
-    excerpt: {
-      EN: "How 510 built a scene around silence, distortion, and coordinates.",
-      ID: "Bagaimana 510 membangun scene lewat keheningan, distorsi, dan koordinat.",
-    },
-    date: "02 FEB 2025",
-    url: "#",
-    image: "https://images.unsplash.com/photo-1508252592163-5d3c3c559f36?w=1200",
-  },
-  {
-    source: "PILGRIM MAG",
-    title: {
-      EN: "Weight, restraint, then rupture — inside the Ripple sessions",
-      ID: "Berat, terkendali, lalu pecah — di dalam sesi Ripple",
-    },
-    excerpt: {
-      EN: "A single-room production diary from a band that refuses the polish of the streaming era.",
-      ID: "Catatan produksi satu-ruangan dari band yang menolak kilap era streaming.",
-    },
-    date: "18 NOV 2024",
-    url: "#",
-    image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200",
-  },
-  {
-    source: "WHITEBOARD JOURNAL",
-    title: {
-      EN: "One of the year's most physical live sets",
-      ID: "Salah satu penampilan panggung paling fisik tahun ini",
-    },
-    excerpt: {
-      EN: "Reviewing the sold-out night at M Bloc, where the room and the band moved as one.",
-      ID: "Ulasan malam sold-out di M Bloc, saat ruangan dan band bergerak sebagai satu.",
-    },
-    date: "07 OCT 2024",
-    url: "#",
-    image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200",
-  },
-];
 
-const CONTACT_EMAILS: { label: Record<Lang, string>; email: string }[] = [
-  { label: { EN: "Booking", ID: "Booking" }, email: "booking@510.band" },
-  { label: { EN: "Press", ID: "Pers" }, email: "press@510.band" },
-  { label: { EN: "Management", ID: "Manajemen" }, email: "mgmt@510.band" },
-];
 
-const SOCIALS: { name: string; url: string }[] = [
-  { name: "Instagram", url: "#" },
-  { name: "Spotify", url: "#" },
-  { name: "YouTube", url: "#" },
-  { name: "TikTok", url: "#" },
-  { name: "X / Twitter", url: "#" },
-  { name: "Bandcamp", url: "#" },
-];
 
 // ---- Copy dictionary ----
 const COPY = {
@@ -857,12 +779,7 @@ function Press() {
         date: formatEventDate(p.published_date),
         href: null as string | null,
       }))
-    : PRESS.map((p, i) => ({
-        id: String(i),
-        title: p.title[lang],
-        date: p.date,
-        href: p.url,
-      }));
+    : [];
 
   return (
     <section id="press" className="relative overflow-hidden border-y border-white/10 py-24 md:py-32">
@@ -922,12 +839,12 @@ function Contact() {
   const emails =
     dbEmails && dbEmails.length > 0
       ? dbEmails.map((c) => ({ label: c.label, email: c.email }))
-      : CONTACT_EMAILS.map((c) => ({ label: c.label[lang], email: c.email }));
+      : [];
 
   const socials =
     dbSocials && dbSocials.length > 0
       ? dbSocials.map((s) => ({ name: s.platform, url: s.url }))
-      : SOCIALS;
+      : [];
 
   return (
     <section id="contact" className="relative overflow-hidden py-32 md:py-48">
@@ -980,7 +897,7 @@ function Contact() {
             })}
           </div>
 
-          <div className="mt-10">
+          {socials.length > 0 && <div className="mt-10">
             <p className="text-xs uppercase tracking-[0.3em] text-white/50">{COPY.follow[lang]}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {socials.map((s) => (
@@ -996,7 +913,7 @@ function Contact() {
                 </a>
               ))}
             </div>
-          </div>
+          </div>}
         </Reveal>
 
         <Reveal delay={0.15}>
