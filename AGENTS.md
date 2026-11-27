@@ -11,4 +11,4 @@
 
 ## Architecture rules
 
-- App code imports `@/integrations/supabase/app-client` (and `app-auth-attacher` in start.ts), never the generated `client`/`auth-attacher` — the app runs on the user's own Supabase (bnezw...), while the generated files and .env point at the paused Lovable Cloud.
+- App code imports `@/integrations/supabase/app-client` / `app-config.server`; these now point at Lovable Cloud (SUPABASE_* env) — the old external Supabase was dropped because its accounts were unreachable after remix.

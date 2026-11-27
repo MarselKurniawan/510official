@@ -1,11 +1,10 @@
-// Browser + SSR client for the project's OWN Supabase instance.
-// The platform-managed .env keeps pointing at Lovable Cloud, so the URL and
-// publishable key (safe to ship) are pinned here instead.
+// App client: now points at Lovable Cloud (same values as the generated .env).
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
-const APP_URL = "https://bnezwcsiscshivwlsehq.supabase.co";
-const APP_PUBLISHABLE_KEY = "sb_publishable_jRGXMxnbQqKcU6Lb-aqZqA_qvG7LdFq";
+const APP_URL = import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"]!;
+const APP_PUBLISHABLE_KEY =
+  import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_PUBLISHABLE_KEY"]!;
 
 function appFetch(key: string): typeof fetch {
   return (input, init) => {
@@ -23,7 +22,6 @@ function create() {
   return createClient<Database>(APP_URL, APP_PUBLISHABLE_KEY, {
     global: { fetch: appFetch(APP_PUBLISHABLE_KEY) },
     auth: {
-      storageKey: "sb-bnezwcsiscshivwlsehq-auth-token",
       persistSession: typeof window !== "undefined",
       autoRefreshToken: typeof window !== "undefined",
     },

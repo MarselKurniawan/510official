@@ -22,31 +22,17 @@ export function appSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
-// The project's own Supabase instance (publishable values are safe in code).
-const APP_URL = 'https://bnezwcsiscshivwlsehq.supabase.co';
-const APP_PUBLISHABLE_KEY = 'sb_publishable_jRGXMxnbQqKcU6Lb-aqZqA_qvG7LdFq';
-const APP_REF = 'bnezwcsiscshivwlsehq';
-
-// Only honour the secret when it really points at this project, so a stale
-// Lovable Cloud value can't desync the server from the browser client.
+// Now bound to Lovable Cloud via the platform-managed SUPABASE_* vars.
 export function appSupabaseUrl(): string {
-  const fromSecret = process.env['APP_SUPABASE_URL'];
-  return fromSecret && fromSecret.includes(APP_REF) ? fromSecret : APP_URL;
+  return process.env['SUPABASE_URL']!;
 }
 
 export function appSupabasePublishableKey(): string {
-  const fromSecret = process.env['APP_SUPABASE_PUBLISHABLE_KEY'];
-  return fromSecret && fromSecret !== process.env['SUPABASE_PUBLISHABLE_KEY']
-    ? fromSecret
-    : APP_PUBLISHABLE_KEY;
+  return process.env['SUPABASE_PUBLISHABLE_KEY']!;
 }
 
 export function appSupabaseServiceRoleKey(): string {
-  const key = process.env['APP_SUPABASE_SERVICE_ROLE_KEY'];
-  if (!key || key === process.env['SUPABASE_SERVICE_ROLE_KEY']) {
-    throw new Error(
-      'APP_SUPABASE_SERVICE_ROLE_KEY belum diisi dengan service role key project bnezwcsiscshivwlsehq.',
-    );
-  }
+  const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
+  if (!key) throw new Error('SUPABASE_SERVICE_ROLE_KEY is missing.');
   return key;
 }
