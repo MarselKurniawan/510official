@@ -17,6 +17,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,14 +66,19 @@ function AuthPage() {
           </div>
           <div>
             <label className="text-xs uppercase tracking-widest text-muted-foreground">Password</label>
+            <div className="relative">
             <input
-              type="password"
+              type={show ? "text" : "password"}
               required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 w-full border border-border bg-transparent rounded-md px-3 py-2 text-sm focus:border-foreground outline-none"
+              className="mt-2 w-full border border-border bg-transparent rounded-md px-3 py-2 text-sm focus:border-foreground outline-none pr-16"
             />
+            <button type="button" onClick={() => setShow((v) => !v)} className="absolute right-2 top-1/2 mt-1 -translate-y-1/2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground">
+              {show ? "Hide" : "Show"}
+            </button>
+            </div>
           </div>
 
           {error && <p className="text-xs text-destructive">{error}</p>}
