@@ -10,6 +10,7 @@ import kickWhite from "@/assets/kick-white.webp.asset.json";
 import bajawaLive from "@/assets/bajawa.webp.asset.json";
 import saemenLive from "@/assets/saemen-live.mp4.asset.json";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { CometCursor } from "@/components/CometCursor";
 import { MusicBackdrop } from "@/components/MusicBackdrop";
 import { SectionFX } from "@/components/SectionFX";
 import { Reveal } from "@/components/Reveal";
@@ -118,6 +119,7 @@ function Home() {
   return (
     <>
       <SmoothScroll />
+      <CometCursor />
       <div className="min-h-screen bg-background text-foreground">
         <Nav />
         <Hero />
