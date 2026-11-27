@@ -36,14 +36,14 @@ export function CometCursor() {
       pos.y += (target.y - pos.y) * 0.2;
       const speed = Math.hypot(pos.x - px, pos.y - py);
       if (visible) {
-        const n = Math.min(6, 1 + Math.floor(speed / 3));
+        const n = Math.min(3, 1 + Math.floor(speed / 6));
         for (let i = 0; i < n; i++) {
           const t = i / n;
           parts.push({
-            x: px + (pos.x - px) * t + (Math.random() - 0.5) * 4,
-            y: py + (pos.y - py) * t + (Math.random() - 0.5) * 4,
+            x: px + (pos.x - px) * t + (Math.random() - 0.5) * 1.5,
+            y: py + (pos.y - py) * t + (Math.random() - 0.5) * 1.5,
             vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-            life: 1, size: 2 + Math.random() * 3.5, hue: 22 + Math.random() * 20,
+            life: 1, size: 0.8 + Math.random() * 1.2, hue: 22 + Math.random() * 20,
           });
         }
       }
@@ -51,12 +51,12 @@ export function CometCursor() {
       ctx.globalCompositeOperation = "lighter";
       for (let i = parts.length - 1; i >= 0; i--) {
         const p = parts[i];
-        p.x += p.vx; p.y += p.vy; p.life -= 0.025;
+        p.x += p.vx; p.y += p.vy; p.life -= 0.035;
         if (p.life <= 0) { parts.splice(i, 1); continue; }
-        const r = p.size * p.life * 3;
+        const r = p.size * p.life * 2;
         const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
-        g.addColorStop(0, `hsla(${p.hue},100%,75%,${p.life})`);
-        g.addColorStop(0.4, `hsla(${p.hue},95%,50%,${p.life * 0.5})`);
+        g.addColorStop(0, `hsla(${p.hue},100%,75%,${p.life * 0.6})`);
+        g.addColorStop(0.4, `hsla(${p.hue},95%,50%,${p.life * 0.25})`);
         g.addColorStop(1, "hsla(20,90%,40%,0)");
         ctx.fillStyle = g;
         ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill();
