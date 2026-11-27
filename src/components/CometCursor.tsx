@@ -1,92 +1,68 @@
 import { useEffect, useRef } from "react";
 import logo from "@/assets/cursor-logo.png.asset.json";
 
-// Logo follows the cursor with a glowing comet tail (fine pointers only).
+// Logo follows the cursor, tilts toward the movement direction and glitches
+// (RGB split + jitter) on fast moves and at random intervals. Fine pointers only.
 export function CometCursor() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const logoRef = useRef<HTMLImageElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const redRef = useRef<HTMLImageElement>(null);
+  const cyanRef = useRef<HTMLImageElement>(null);
+  const mainRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const canvas = canvasRef.current!;
-    const img = logoRef.current!;
-    const ctx = canvas.getContext("2d")!;
-    let w = 0, h = 0, raf = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const resize = () => {
-      w = window.innerWidth; h = window.innerHeight;
-      canvas.width = w * dpr; canvas.height = h * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    const target = { x: w / 2, y: h / 2 };
-    const pos = { ...target };
-    let visible = false;
-    type P = { x: number; y: number; vx: number; vy: number; life: number; size: number; hue: number };
-    const parts: P[] = [];
+    const wrap = wrapRef.current!, red = redRef.current!, cyan = cyanRef.current!, main = mainRef.current!;
+    const target = { x: 0, y: 0 }, pos = { x: 0, y: 0 };
+    let visible = false, angle = 0, raf = 0, glitch = 0;
     const onMove = (e: PointerEvent) => {
       target.x = e.clientX; target.y = e.clientY;
-      if (!visible) { visible = true; pos.x = target.x; pos.y = target.y; img.style.opacity = "1"; }
+      if (!visible) { visible = true; pos.x = target.x; pos.y = target.y; wrap.style.opacity = "1"; }
     };
-    const onLeave = () => { visible = false; img.style.opacity = "0"; };
+    const onLeave = () => { visible = false; wrap.style.opacity = "0"; };
     const tick = () => {
-      const px = pos.x, py = pos.y;
-      pos.x += (target.x - pos.x) * 0.2;
-      pos.y += (target.y - pos.y) * 0.2;
-      const speed = Math.hypot(pos.x - px, pos.y - py);
-      if (visible) {
-        const n = Math.min(3, 1 + Math.floor(speed / 6));
-        for (let i = 0; i < n; i++) {
-          const t = i / n;
-          parts.push({
-            x: px + (pos.x - px) * t + (Math.random() - 0.5) * 1.5,
-            y: py + (pos.y - py) * t + (Math.random() - 0.5) * 1.5,
-            vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
-            life: 1, size: 0.8 + Math.random() * 1.2, hue: 22 + Math.random() * 20,
-          });
-        }
-      }
-      ctx.clearRect(0, 0, w, h);
-      ctx.globalCompositeOperation = "lighter";
-      for (let i = parts.length - 1; i >= 0; i--) {
-        const p = parts[i];
-        p.x += p.vx; p.y += p.vy; p.life -= 0.035;
-        if (p.life <= 0) { parts.splice(i, 1); continue; }
-        const r = p.size * p.life * 2;
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
-        g.addColorStop(0, `hsla(${p.hue},100%,75%,${p.life * 0.6})`);
-        g.addColorStop(0.4, `hsla(${p.hue},95%,50%,${p.life * 0.25})`);
-        g.addColorStop(1, "hsla(20,90%,40%,0)");
-        ctx.fillStyle = g;
-        ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.globalCompositeOperation = "source-over";
-      img.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0) translate(-50%, -50%)`;
+      const dx = (target.x - pos.x) * 0.18, dy = (target.y - pos.y) * 0.18;
+      pos.x += dx; pos.y += dy;
+      const speed = Math.hypot(dx, dy);
+      // Tilt toward horizontal movement, clamp so the logo never flips.
+      const want = Math.max(-35, Math.min(35, dx * 2.2));
+      angle += (want - angle) * 0.15;
+      const stretch = 1 + Math.min(speed / 60, 0.25);
+      if (speed > 14 || Math.random() < 0.006) glitch = 6 + Math.floor(Math.random() * 6);
+      let ox = 0, oy = 0, split = 0;
+      if (glitch > 0) {
+        glitch--;
+        split = 2 + Math.random() * 4;
+        ox = (Math.random() - 0.5) * 6; oy = (Math.random() - 0.5) * 3;
+        const top = Math.random() * 70, bottom = Math.min(100, top + 10 + Math.random() * 30);
+        main.style.clipPath = Math.random() < 0.5 ? `inset(${top}% 0 ${100 - bottom}% 0)` : "none";
+      } else main.style.clipPath = "none";
+      wrap.style.transform = `translate3d(${pos.x + ox}px, ${pos.y + oy}px, 0) translate(-50%, -50%) rotate(${angle}deg) scaleY(${stretch})`;
+      red.style.transform = `translateX(${-split}px)`;
+      cyan.style.transform = `translateX(${split}px)`;
+      red.style.opacity = cyan.style.opacity = split ? "0.8" : "0";
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     window.addEventListener("pointermove", onMove);
     document.addEventListener("pointerleave", onLeave);
-    window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
-      window.removeEventListener("resize", resize);
     };
   }, []);
 
+  const layer = "absolute inset-0 h-full w-full object-contain";
   return (
-    <>
-      <canvas ref={canvasRef} aria-hidden className="pointer-events-none fixed inset-0 z-[9998] h-full w-full" />
-      <img
-        ref={logoRef}
-        src={logo.url}
-        alt=""
-        aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-[9999] h-10 w-10 object-contain opacity-0 transition-opacity duration-300 drop-shadow-[0_0_8px_rgba(255,140,40,0.7)]"
-      />
-    </>
+    <div
+      ref={wrapRef}
+      aria-hidden
+      className="pointer-events-none fixed left-0 top-0 z-[9999] h-11 w-11 opacity-0 transition-opacity duration-300"
+    >
+      <img ref={redRef} src={logo.url} alt="" className={`${layer} mix-blend-screen opacity-0`} style={{ filter: "drop-shadow(0 0 0 red) sepia(1) saturate(8) hue-rotate(-40deg)" }} />
+      <img ref={cyanRef} src={logo.url} alt="" className={`${layer} mix-blend-screen opacity-0`} style={{ filter: "sepia(1) saturate(8) hue-rotate(150deg)" }} />
+      <img ref={mainRef} src={logo.url} alt="" className={`${layer} drop-shadow-[0_0_6px_rgba(255,140,40,0.5)]`} />
+    </div>
   );
 }
